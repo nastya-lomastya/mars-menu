@@ -9,172 +9,152 @@
 const CONFIG = {
   // 1) Опубликованная Google-таблица как CSV.
   //    Файл → Поделиться → Опубликовать в интернете → выбрать лист → CSV → скопировать ссылку.
-  //    Пока пусто — показываются демо-данные.
   sheetCsvUrl: "",
 
   // 2) Ссылка на карту лояльности
   loyaltyUrl: "https://card.marsespresso.com",
 
   // 3) Ссылка на Google Карты для отзыва
-  reviewUrl: "",
+  reviewUrl: "https://g.page/r/CbFormK82YJZEAE/review",
 
-  cafeName: "Mars",
   currency: "₺",
   currencyAfter: true,
   defaultLang: "tr"
 };
 
-// Группы верхнего уровня: ключ = значение поля "group_tr"/"group_en" в таблице.
-// Порядок здесь = порядок вкладок.
-// Если позиция не попадает ни в одну группу — идёт в последнюю вкладку.
 const GROUPS = [
-  { key_tr: "İçecekler", key_en: "Drinks",   hasSubcats: true  },
-  { key_tr: "Yemekler",  key_en: "Food",      hasSubcats: false },
-  { key_tr: "Tatlılar",  key_en: "Desserts",  hasSubcats: false },
+  { key_tr: "İçecekler", key_en: "Drinks"   },
+  { key_tr: "Yemekler",  key_en: "Food"     },
+  { key_tr: "Tatlılar",  key_en: "Desserts" },
 ];
 </script>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<!-- Cormorant Garamond — характерная для Mars Loyalty серьёзная антиква -->
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,200;12..96,300;12..96,400;12..96,500;12..96,600&display=swap" rel="stylesheet">
 
 <style>
-:root {
-  /* ---- кремовая палитра меню (подхватывает бренд карты лояльности) ---- */
-  --paper:   #F5EFE4;        /* кремовый фон */
-  --surface: #FDFAF5;        /* карточки */
-  --ink:     #1A1714;        /* почти-чёрный текст */
-  --muted:   #7A6E63;
-  --line:    #E2D9CC;
-  --brand:   #1A1714;        /* акцент — тот же почти-чёрный, как у карты */
-  --brand-soft: #EDE6D9;
-  --gold:    #B8843A;        /* тёплый золотой — единственный цветной акцент */
-
-  --display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
-  --body:    "Inter", system-ui, -apple-system, sans-serif;
-  --max: 540px;
-}
 *, *::before, *::after { box-sizing: border-box; }
 html { -webkit-text-size-adjust: 100%; }
+
+:root {
+  --gold:        #D4B57E;
+  --gold-light:  #ECD5A4;
+  --gold-dim:    rgba(212,181,126,0.14);
+  --gold-border: rgba(212,181,126,0.22);
+  --bg:          #111111;
+  --surface:     #1d1813;
+  --ink:         #ffffff;
+  --muted:       rgba(255,255,255,0.38);
+  --line:        rgba(255,255,255,0.07);
+  --font: 'Bricolage Grotesque', system-ui, -apple-system, sans-serif;
+  --max: 540px;
+}
+
 body {
-  margin: 0; background: var(--paper); color: var(--ink);
-  font-family: var(--body); line-height: 1.5;
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
-.wrap { max-width: var(--max); margin: 0 auto; padding: 0 16px 80px; }
+
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background: radial-gradient(ellipse at 50% 0%, rgba(212,181,126,0.07) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.wrap {
+  position: relative; z-index: 1;
+  max-width: var(--max); margin: 0 auto;
+  padding: 0 16px 80px;
+}
 
 /* ======== HEADER ======== */
 header {
   position: sticky; top: 0; z-index: 40;
   max-width: var(--max); margin: 0 auto;
-  background: color-mix(in srgb, var(--paper) 90%, transparent);
-  backdrop-filter: blur(10px) saturate(1.3);
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(12px) saturate(1.2);
   padding: 12px 16px 10px;
   display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--gold-border);
   gap: 12px;
 }
 .brand {
   display: flex; align-items: center; gap: 10px;
-  text-decoration: none; color: var(--ink);
-  flex: 0 0 auto;
+  text-decoration: none; color: var(--ink); flex: 0 0 auto;
 }
-.brand img { height: 32px; width: auto; display: block; }
+.brand img { height: 28px; width: auto; display: block; }
 .brand-name {
-  font-family: var(--display); font-weight: 600; font-size: 26px;
-  letter-spacing: .5px; line-height: 1; margin: 0;
+  font-size: 22px; font-weight: 500; letter-spacing: .06em;
+  text-transform: uppercase; line-height: 1; margin: 0;
+  color: #fff;
 }
-.brand-dot { color: var(--gold); }
 .lang {
-  display: inline-flex; border: 1px solid var(--line); border-radius: 999px;
-  overflow: hidden; background: var(--surface); font-weight: 600; font-size: 12px;
-  flex: 0 0 auto;
+  display: flex; align-items: center; gap: 12px; flex: 0 0 auto;
 }
+.lang-sep { color: var(--gold-border); font-size: 13px; }
 .lang button {
   border: 0; background: transparent; color: var(--muted);
-  padding: 6px 11px; cursor: pointer; font: inherit; line-height: 1;
+  font-family: var(--font); font-size: 12px; font-weight: 500;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 0 0 3px; cursor: pointer;
+  border-bottom: 1px solid transparent;
+  transition: color .15s, border-color .15s;
 }
-.lang button[aria-pressed="true"] { background: var(--brand); color: #fff; }
-.lang button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+.lang button[aria-pressed="true"] { color: var(--gold); border-bottom-color: var(--gold); }
 
 /* ======== ACTION CHIPS ======== */
-.actions {
-  display: flex; gap: 8px; padding: 10px 0 4px; flex-wrap: wrap;
-}
+.actions { display: flex; gap: 8px; padding: 12px 0 4px; flex-wrap: wrap; }
 .chip {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 8px 14px; border-radius: 999px; text-decoration: none;
-  font-size: 13px; font-weight: 600; border: 1px solid var(--line);
-  background: var(--surface); color: var(--ink); white-space: nowrap;
-  transition: background .15s, border-color .15s;
+  padding: 7px 13px; border-radius: 999px; text-decoration: none;
+  font-size: 13px; font-weight: 500;
+  border: 1px solid var(--gold-border);
+  background: var(--gold-dim); color: rgba(255,255,255,0.8);
+  white-space: nowrap; transition: background .15s;
 }
-.chip:hover { background: var(--brand-soft); border-color: var(--brand); }
-.chip svg { width: 14px; height: 14px; flex: 0 0 auto; color: var(--gold); }
-.chip:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.chip:hover { background: rgba(212,181,126,0.22); }
+.chip svg { width: 13px; height: 13px; flex: 0 0 auto; color: var(--gold); }
 
-/* ======== TOP-LEVEL GROUP TABS ======== */
+/* ======== GROUP TABS ======== */
 nav.groups {
   position: sticky; top: 57px; z-index: 30;
   margin: 0 -16px;
-  background: color-mix(in srgb, var(--paper) 94%, transparent);
+  background: color-mix(in srgb, var(--bg) 92%, transparent);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--line);
+  border-bottom: 1px solid var(--gold-border);
   display: flex; overflow-x: auto; scrollbar-width: none;
 }
 nav.groups::-webkit-scrollbar { display: none; }
 nav.groups button {
-  flex: 0 0 auto; background: transparent; border: 0;
-  font-family: var(--display); font-weight: 600; font-size: 18px;
-  color: var(--muted); padding: 10px 18px 8px;
+  flex: 1; background: transparent; border: 0;
+  font-family: var(--font); font-weight: 400; font-size: 14px;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--muted); padding: 12px 16px 10px;
   cursor: pointer; white-space: nowrap; line-height: 1;
-  border-bottom: 2px solid transparent; margin-bottom: -1px;
+  border-bottom: 1.5px solid transparent; margin-bottom: -1px;
+  transition: color .15s, border-color .15s;
 }
-nav.groups button.active {
-  color: var(--ink); border-bottom-color: var(--gold);
-}
-nav.groups button:focus-visible { outline: 2px solid var(--gold); outline-offset: -2px; }
+nav.groups button.active { color: var(--gold); border-bottom-color: var(--gold); }
 
-/* ======== SUBCATEGORY NAV (only inside Drinks) ======== */
-nav.subcats {
-  position: sticky; top: 105px; z-index: 20;
-  margin: 0 -16px; padding: 6px 16px;
-  background: color-mix(in srgb, var(--paper) 92%, transparent);
-  backdrop-filter: blur(6px);
-  border-bottom: 1px solid var(--line);
-  display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none;
-}
-nav.subcats::-webkit-scrollbar { display: none; }
-nav.subcats.hidden { display: none; }
-nav.subcats a {
-  flex: 0 0 auto; text-decoration: none; font-size: 12px; font-weight: 600;
-  color: var(--muted); padding: 5px 11px; border-radius: 999px;
-  border: 1px solid transparent; white-space: nowrap;
-}
-nav.subcats a.active { color: var(--brand); background: var(--brand-soft); border-color: var(--line); }
-
-/* ======== SECTIONS & ITEMS ======== */
-.group-panel { display: none; }
-.group-panel.visible { display: block; }
-
-section.cat { padding-top: 24px; scroll-margin-top: 148px; }
-.cat-head {
-  display: flex; align-items: baseline; gap: 10px; margin: 0 0 4px;
-}
-.cat-head h2 {
-  font-family: var(--display); font-weight: 600; font-size: 22px;
-  margin: 0; color: var(--ink); letter-spacing: .2px;
-}
-.cat-head .rule { flex: 1; height: 1px; background: var(--line); }
+/* ======== ITEMS ======== */
+section.cat { padding-top: 24px; scroll-margin-top: 100px; }
 
 .item {
   display: flex; gap: 14px; padding: 14px 0;
   border-bottom: 1px solid var(--line); align-items: flex-start;
 }
-.item.sold { opacity: .45; }
+.item.sold { opacity: .38; }
+
 .thumb-wrap {
-  width: 72px; height: 72px; flex: 0 0 auto; position: relative;
-  cursor: pointer;
+  width: 72px; height: 72px; flex: 0 0 auto;
+  position: relative; cursor: pointer;
 }
 .thumb-wrap img,
 .thumb-wrap .ph {
@@ -182,14 +162,16 @@ section.cat { padding-top: 24px; scroll-margin-top: 148px; }
   object-fit: cover; display: block;
 }
 .thumb-wrap .ph {
-  background: linear-gradient(135deg, var(--brand-soft), #fff);
+  background: var(--surface);
+  border: 1px solid var(--gold-border);
   display: flex; align-items: center; justify-content: center;
-  font-family: var(--display); font-weight: 600; font-size: 26px; color: var(--gold);
+  font-size: 26px; font-weight: 300; color: var(--gold);
+  letter-spacing: .05em;
 }
 .zoom-hint {
   position: absolute; bottom: 4px; right: 4px;
-  background: rgba(26,23,20,.55); border-radius: 6px;
-  padding: 2px 4px; display: flex; align-items: center; justify-content: center;
+  background: rgba(0,0,0,.55); border-radius: 5px;
+  padding: 3px; display: flex; align-items: center; justify-content: center;
   opacity: 0; transition: opacity .2s; pointer-events: none;
 }
 .thumb-wrap:hover .zoom-hint,
@@ -198,38 +180,45 @@ section.cat { padding-top: 24px; scroll-margin-top: 148px; }
 
 .item-body { flex: 1; min-width: 0; }
 .item-top { display: flex; justify-content: space-between; gap: 10px; align-items: baseline; }
-.item-name { font-weight: 600; font-size: 15px; margin: 0; line-height: 1.3; }
-.price { font-weight: 600; font-size: 15px; white-space: nowrap; color: var(--ink); font-variant-numeric: tabular-nums; }
+.item-name { font-weight: 500; font-size: 15px; margin: 0; line-height: 1.3; color: #fff; }
+.price {
+  font-weight: 500; font-size: 15px; white-space: nowrap;
+  color: var(--gold-light); font-variant-numeric: tabular-nums; flex: 0 0 auto;
+}
 .desc { color: var(--muted); font-size: 13px; margin: 3px 0 0; line-height: 1.4; }
 .tag {
-  display: inline-block; margin-top: 5px; font-size: 10px; font-weight: 600;
-  color: var(--muted); background: var(--brand-soft); padding: 2px 8px;
-  border-radius: 6px; text-transform: uppercase; letter-spacing: .5px;
+  display: inline-block; margin-top: 5px; font-size: 10px; font-weight: 500;
+  color: var(--muted); border: 1px solid var(--gold-border);
+  padding: 2px 8px; border-radius: 6px;
+  text-transform: uppercase; letter-spacing: .5px;
 }
 
 /* ======== LIGHTBOX ======== */
 #lightbox {
   display: none; position: fixed; inset: 0; z-index: 100;
-  background: rgba(20,16,12,.88); backdrop-filter: blur(4px);
+  background: rgba(0,0,0,.92); backdrop-filter: blur(6px);
   align-items: center; justify-content: center; padding: 20px;
 }
 #lightbox.open { display: flex; }
 #lightbox img {
   max-width: min(480px, 100%); max-height: 80dvh;
   border-radius: 16px; object-fit: contain;
-  box-shadow: 0 32px 80px rgba(0,0,0,.6);
+  box-shadow: 0 32px 80px rgba(0,0,0,.8);
+  border: 1px solid var(--gold-border);
 }
 #lightbox-close {
   position: absolute; top: 16px; right: 16px;
-  background: rgba(255,255,255,.12); border: 0; border-radius: 999px;
-  color: #fff; font-size: 20px; width: 40px; height: 40px;
+  background: rgba(255,255,255,.08);
+  border: 1px solid var(--gold-border);
+  border-radius: 999px; color: #fff; font-size: 18px;
+  width: 40px; height: 40px;
   display: flex; align-items: center; justify-content: center;
-  cursor: pointer; font-family: var(--body);
+  cursor: pointer; font-family: var(--font);
 }
 #lightbox-caption {
   position: absolute; bottom: 28px; left: 50%; transform: translateX(-50%);
-  color: rgba(255,255,255,.75); font-size: 14px; font-family: var(--body);
-  text-align: center; white-space: nowrap; max-width: 90%;
+  color: var(--muted); font-size: 13px; text-align: center;
+  white-space: nowrap; max-width: 90%;
   overflow: hidden; text-overflow: ellipsis;
 }
 
@@ -237,7 +226,8 @@ section.cat { padding-top: 24px; scroll-margin-top: 148px; }
 .state { text-align: center; color: var(--muted); padding: 48px 16px; font-size: 14px; }
 .ribbon {
   margin-top: 16px; font-size: 12px; color: var(--gold);
-  background: var(--brand-soft); border-radius: 8px; padding: 7px 12px; text-align: center;
+  border: 1px solid var(--gold-border); border-radius: 8px;
+  padding: 7px 12px; text-align: center;
 }
 footer { text-align: center; color: var(--muted); font-size: 12px; padding-top: 32px; }
 
@@ -246,7 +236,6 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding-top: 
 </head>
 <body>
 
-<!-- LIGHTBOX -->
 <div id="lightbox" role="dialog" aria-modal="true" aria-label="Photo">
   <button id="lightbox-close" aria-label="Close">✕</button>
   <img id="lightbox-img" src="" alt="">
@@ -254,16 +243,14 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding-top: 
 </div>
 
 <header>
-  <a class="brand" href="https://marsespresso.com" aria-label="Mars Espresso">
-    <!-- Логотип подгружается с вашего сайта -->
-    <img src="https://marsespresso.com/wp-content/uploads/2022/07/mars-logo-beyaz-300p.png"
-         alt="Mars"
-         onerror="this.style.display='none'"
-         id="logo-img">
-    <h1 class="brand-name" id="brand-title">Mars<span class="brand-dot">.</span></h1>
+  <a class="brand" href="https://marsespresso.com" aria-label="Mars">
+    <img src="mars_transparent.png" alt="Mars"
+         onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='block'">
+    <span class="brand-name" id="brand-fallback" style="display:none">Mars</span>
   </a>
   <div class="lang" role="group" aria-label="Language">
     <button id="btn-tr" onclick="setLang('tr')" aria-pressed="true">TR</button>
+    <span class="lang-sep">/</span>
     <button id="btn-en" onclick="setLang('en')" aria-pressed="false">EN</button>
   </div>
 </header>
@@ -271,22 +258,18 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding-top: 
 <div class="wrap">
   <div class="actions" id="actions"></div>
   <nav class="groups" id="groupnav" aria-label="Menu groups"></nav>
-  <nav class="subcats hidden" id="subnav" aria-label="Subcategories"></nav>
-  <main id="menu"><p class="state" id="state">Yükleniyor… / Loading…</p></main>
+  <main id="menu"><p class="state">Yükleniyor… / Loading…</p></main>
   <footer id="footer"></footer>
 </div>
 
 <script>
-/* ---- strings ---- */
 const T = {
   loyalty: { tr:"Sadakat kartı", en:"Loyalty card" },
   review:  { tr:"Değerlendirme bırak", en:"Leave a review" },
   empty:   { tr:"Menü yakında.", en:"Menu coming soon." },
   sold:    { tr:"Tükendi", en:"Sold out" },
-  error:   { tr:"Menü yüklenemedi. Google E-Tablo'nun yayınlandığından emin olun.",
-             en:"Couldn't load menu. Make sure the Google Sheet is published." },
-  sample:  { tr:"Örnek veriler — kendi Google E-Tablonuzu bağlayın.",
-             en:"Sample data — connect your own Google Sheet." }
+  error:   { tr:"Menü yüklenemedi.", en:"Couldn't load menu." },
+  sample:  { tr:"Örnek veriler — Google E-Tablonuzu bağlayın.", en:"Sample data — connect your Google Sheet." }
 };
 
 let LANG = CONFIG.defaultLang === "en" ? "en" : "tr";
@@ -294,22 +277,18 @@ let ITEMS = [];
 let ACTIVE_GROUP = 0;
 let USING_SAMPLE = false;
 
-/* ---- demo data ---- */
-/* Columns: group_tr, group_en, category_tr, category_en, name_tr, name_en,
-            description_tr, description_en, price, photo, available */
 const SAMPLE = [
-  {group_tr:"İçecekler",group_en:"Drinks",category_tr:"Kahve",category_en:"Coffee",name_tr:"Flat White",name_en:"Flat White",description_tr:"Çift shot, kadifemsi süt",description_en:"Double shot, velvety milk",price:"95",photo:"https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=300&q=75",available:"TRUE"},
-  {group_tr:"İçecekler",group_en:"Drinks",category_tr:"Kahve",category_en:"Coffee",name_tr:"V60 Filtre",name_en:"V60 Filter",description_tr:"Tek menşe, dönüşümlü",description_en:"Single origin, rotating",price:"75",photo:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&q=75",available:"TRUE"},
-  {group_tr:"İçecekler",group_en:"Drinks",category_tr:"Kahve",category_en:"Coffee",name_tr:"Buzlu Latte",name_en:"Iced Latte",description_tr:"",description_en:"",price:"90",photo:"",available:"FALSE"},
-  {group_tr:"İçecekler",group_en:"Drinks",category_tr:"Çay",category_en:"Tea",name_tr:"Demlik Çay",name_en:"Turkish Tea",description_tr:"Klasik demlik",description_en:"Classic brew",price:"45",photo:"",available:"TRUE"},
-  {group_tr:"İçecekler",group_en:"Drinks",category_tr:"Soğuk İçecekler",category_en:"Cold Drinks",name_tr:"Limonata",name_en:"Lemonade",description_tr:"Taze sıkılmış",description_en:"Freshly squeezed",price:"80",photo:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=75",available:"TRUE"},
-  {group_tr:"Yemekler",group_en:"Food",category_tr:"",category_en:"",name_tr:"Antep Fıstıklı Kruvasan",name_en:"Pistachio Croissant",description_tr:"Bu sabah pişti",description_en:"Baked this morning",price:"110",photo:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&q=75",available:"TRUE"},
-  {group_tr:"Yemekler",group_en:"Food",category_tr:"",category_en:"",name_tr:"Peynirli Tost",name_en:"Cheese Toast",description_tr:"",description_en:"",price:"85",photo:"",available:"TRUE"},
-  {group_tr:"Tatlılar",group_en:"Desserts",category_tr:"",category_en:"",name_tr:"Cheesecake",name_en:"Cheesecake",description_tr:"San Sebastian usulü",description_en:"Burnt Basque style",price:"130",photo:"https://images.unsplash.com/photo-1473427822047-b7de3e28e8e6?w=300&q=75",available:"TRUE"},
-  {group_tr:"Tatlılar",group_en:"Desserts",category_tr:"",category_en:"",name_tr:"Brownie",name_en:"Brownie",description_tr:"Belçika çikolatasıyla",description_en:"Belgian chocolate",price:"95",photo:"",available:"TRUE"},
+  {group_tr:"İçecekler",group_en:"Drinks",name_tr:"Flat White",name_en:"Flat White",description_tr:"Çift shot, kadifemsi süt",description_en:"Double shot, velvety milk",price:"95",photo:"https://images.unsplash.com/photo-1517256064527-09c73fc73e38?w=300&q=75",available:"TRUE"},
+  {group_tr:"İçecekler",group_en:"Drinks",name_tr:"V60 Filtre",name_en:"V60 Filter",description_tr:"Tek menşe, dönüşümlü",description_en:"Single origin, rotating",price:"75",photo:"https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?w=300&q=75",available:"TRUE"},
+  {group_tr:"İçecekler",group_en:"Drinks",name_tr:"Buzlu Latte",name_en:"Iced Latte",description_tr:"",description_en:"",price:"90",photo:"",available:"FALSE"},
+  {group_tr:"İçecekler",group_en:"Drinks",name_tr:"Demlik Çay",name_en:"Turkish Tea",description_tr:"Klasik demlik",description_en:"Classic brew",price:"45",photo:"",available:"TRUE"},
+  {group_tr:"İçecekler",group_en:"Drinks",name_tr:"Limonata",name_en:"Lemonade",description_tr:"Taze sıkılmış",description_en:"Freshly squeezed",price:"80",photo:"https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=300&q=75",available:"TRUE"},
+  {group_tr:"Yemekler",group_en:"Food",name_tr:"Antep Fıstıklı Kruvasan",name_en:"Pistachio Croissant",description_tr:"Bu sabah pişti",description_en:"Baked this morning",price:"110",photo:"https://images.unsplash.com/photo-1555507036-ab1f4038808a?w=300&q=75",available:"TRUE"},
+  {group_tr:"Yemekler",group_en:"Food",name_tr:"Peynirli Tost",name_en:"Cheese Toast",description_tr:"",description_en:"",price:"85",photo:"",available:"TRUE"},
+  {group_tr:"Tatlılar",group_en:"Desserts",name_tr:"Cheesecake",name_en:"Cheesecake",description_tr:"San Sebastian usulü",description_en:"Burnt Basque style",price:"130",photo:"https://images.unsplash.com/photo-1473427822047-b7de3e28e8e6?w=300&q=75",available:"TRUE"},
+  {group_tr:"Tatlılar",group_en:"Desserts",name_tr:"Brownie",name_en:"Brownie",description_tr:"Belçika çikolatasıyla",description_en:"Belgian chocolate",price:"95",photo:"",available:"TRUE"},
 ];
 
-/* ---- helpers ---- */
 function pick(it, base) {
   const v = (it[base+"_"+LANG]||"").trim();
   return v || (it[base+"_"+(LANG==="tr"?"en":"tr")]||"").trim();
@@ -318,69 +297,45 @@ function fmtPrice(p) {
   const v = (p||"").trim();
   if (!v) return "";
   return /^\d+([.,]\d+)?$/.test(v)
-    ? (CONFIG.currencyAfter ? v+" "+CONFIG.currency : CONFIG.currency+v)
-    : v;
+    ? (CONFIG.currencyAfter ? v+" "+CONFIG.currency : CONFIG.currency+v) : v;
 }
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
-function esc(s) { return (s||"").replace(/[&<>"]/g, c=>({
-  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"
-}[c])); }
-function isAvail(v) {
-  const s=(v||"").trim().toLowerCase();
-  return s!=="false"&&s!=="0"&&s!=="no"&&s!=="hayır";
-}
+function esc(s) { return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
+function isAvail(v) { const s=(v||"").trim().toLowerCase(); return s!=="false"&&s!=="0"&&s!=="no"&&s!=="hayır"; }
 
-/* ---- CSV parser ---- */
 function parseCSV(text) {
   const rows=[]; let row=[], f="", q=false;
   for (let i=0;i<text.length;i++) {
     const c=text[i];
-    if (q) {
-      if (c==='"') { if(text[i+1]==='"'){f+='"';i++;}else q=false; }
-      else f+=c;
-    } else {
-      if (c==='"') q=true;
-      else if (c===',') { row.push(f); f=""; }
-      else if (c==='\n') { row.push(f); rows.push(row); row=[]; f=""; }
-      else if (c!=='\r') f+=c;
-    }
+    if (q) { if(c==='"'){if(text[i+1]==='"'){f+='"';i++;}else q=false;}else f+=c; }
+    else { if(c==='"')q=true; else if(c===','){row.push(f);f="";}
+      else if(c==='\n'){row.push(f);rows.push(row);row=[];f="";}
+      else if(c!=='\r')f+=c; }
   }
-  if (f.length||row.length) { row.push(f); rows.push(row); }
-  if (!rows.length) return [];
-  const headers = rows[0].map(h=>h.trim().toLowerCase());
+  if(f.length||row.length){row.push(f);rows.push(row);}
+  if(!rows.length)return[];
+  const headers=rows[0].map(h=>h.trim().toLowerCase());
   return rows.slice(1).filter(r=>r.some(c=>c.trim()!==""))
-    .map(r=>{ const o={}; headers.forEach((h,i)=>o[h]=(r[i]||"").trim()); return o; });
+    .map(r=>{const o={};headers.forEach((h,i)=>o[h]=(r[i]||"").trim());return o;});
 }
 
-/* ---- LIGHTBOX ---- */
-const lb = document.getElementById("lightbox");
-const lbImg = document.getElementById("lightbox-img");
-const lbCap = document.getElementById("lightbox-caption");
-document.getElementById("lightbox-close").addEventListener("click", closeLB);
-lb.addEventListener("click", e=>{ if(e.target===lb) closeLB(); });
-document.addEventListener("keydown", e=>{ if(e.key==="Escape") closeLB(); });
+/* lightbox */
+const lb=document.getElementById("lightbox");
+const lbImg=document.getElementById("lightbox-img");
+const lbCap=document.getElementById("lightbox-caption");
+document.getElementById("lightbox-close").addEventListener("click",closeLB);
+lb.addEventListener("click",e=>{if(e.target===lb)closeLB();});
+document.addEventListener("keydown",e=>{if(e.key==="Escape")closeLB();});
+function openLB(src,caption){lbImg.src=src;lbCap.textContent=caption||"";lb.classList.add("open");document.body.style.overflow="hidden";}
+function closeLB(){lb.classList.remove("open");document.body.style.overflow="";lbImg.src="";}
 
-function openLB(src, caption) {
-  lbImg.src = src;
-  lbCap.textContent = caption || "";
-  lb.classList.add("open");
-  document.body.style.overflow = "hidden";
-}
-function closeLB() {
-  lb.classList.remove("open");
-  document.body.style.overflow = "";
-  lbImg.src = "";
-}
-
-/* ---- render ---- */
-function getActiveGroupData() {
+function getGroupItems() {
   const g = GROUPS[ACTIVE_GROUP];
-  const gKey = LANG==="tr" ? g.key_tr : g.key_en;
-  // filter items whose group matches
+  const key = LANG==="tr" ? g.key_tr : g.key_en;
   return ITEMS.filter(it => {
-    const gVal = pick(it, "group");
-    if (!gVal && ACTIVE_GROUP===GROUPS.length-1) return true; // fallback to last group
-    return gVal === gKey;
+    const v = pick(it,"group");
+    if (!v && ACTIVE_GROUP===GROUPS.length-1) return true;
+    return v === key;
   });
 }
 
@@ -389,145 +344,78 @@ function render() {
   document.getElementById("btn-tr").setAttribute("aria-pressed", LANG==="tr");
   document.getElementById("btn-en").setAttribute("aria-pressed", LANG==="en");
 
-  // logo visibility: if image loads keep it, else show text brand
-  const logoImg = document.getElementById("logo-img");
-  const brandTitle = document.getElementById("brand-title");
-  // (handled by onerror on img already)
-
-  // action chips
   const icCard = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>`;
   const icStar = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6-5.4-2.8L6.3 19.6l1-6L3 9.4l6-.9z"/></svg>`;
-  let a = "";
-  if (CONFIG.loyaltyUrl) a += `<a class="chip" href="${esc(CONFIG.loyaltyUrl)}" target="_blank" rel="noopener">${icCard}${esc(T.loyalty[LANG])}</a>`;
-  if (CONFIG.reviewUrl)  a += `<a class="chip" href="${esc(CONFIG.reviewUrl)}"  target="_blank" rel="noopener">${icStar}${esc(T.review[LANG])}</a>`;
+  let a="";
+  if(CONFIG.loyaltyUrl) a+=`<a class="chip" href="${esc(CONFIG.loyaltyUrl)}" target="_blank" rel="noopener">${icCard}${esc(T.loyalty[LANG])}</a>`;
+  if(CONFIG.reviewUrl)  a+=`<a class="chip" href="${esc(CONFIG.reviewUrl)}" target="_blank" rel="noopener">${icStar}${esc(T.review[LANG])}</a>`;
   document.getElementById("actions").innerHTML = a;
 
-  // top-level group tabs
-  const gnav = document.getElementById("groupnav");
-  gnav.innerHTML = GROUPS.map((g,i) => {
+  document.getElementById("groupnav").innerHTML = GROUPS.map((g,i) => {
     const label = LANG==="tr" ? g.key_tr : g.key_en;
     return `<button onclick="switchGroup(${i})" class="${i===ACTIVE_GROUP?'active':''}">${esc(label)}</button>`;
   }).join("");
 
-  renderGroupPanel();
+  renderPanel();
 }
 
-function renderGroupPanel() {
+function renderPanel() {
   const menu = document.getElementById("menu");
-  const subnav = document.getElementById("subnav");
-  const g = GROUPS[ACTIVE_GROUP];
-  const items = getActiveGroupData();
+  const items = getGroupItems();
 
   if (!items.length) {
     menu.innerHTML = `<p class="state">${esc(T.empty[LANG])}</p>`;
-    subnav.classList.add("hidden");
-    if (USING_SAMPLE) menu.insertAdjacentHTML("beforeend", `<p class="ribbon">${esc(T.sample[LANG])}</p>`);
+    if (USING_SAMPLE) menu.insertAdjacentHTML("beforeend",`<p class="ribbon">${esc(T.sample[LANG])}</p>`);
     return;
   }
 
-  // build category map (preserving order)
-  const cats = []; const map = {};
-  items.forEach(it => {
-    const cat = pick(it,"category") || (LANG==="tr" ? g.key_tr : g.key_en);
-    if (!map[cat]) { map[cat]=[]; cats.push(cat); }
-    map[cat].push(it);
-  });
-
-  const hasSubs = g.hasSubcats && cats.length > 1;
-
-  // subcategory nav
-  if (hasSubs) {
-    subnav.classList.remove("hidden");
-    subnav.innerHTML = cats.map((c,i) =>
-      `<a href="#sub-${slug(c)}" class="${i===0?'active':''}">${esc(c)}</a>`
-    ).join("");
-  } else {
-    subnav.classList.add("hidden");
-  }
-
-  // items
   const zoomIcon = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/><path d="M11 8v6M8 11h6"/></svg>`;
 
-  menu.innerHTML = cats.map((cat,ci) => {
-    const rows = map[cat].map(it => {
-      const name = esc(pick(it,"name"));
-      const desc = esc(pick(it,"description"));
-      const price = esc(fmtPrice(it.price));
-      const sold = !isAvail(it.available);
-      const photo = (it.photo||"").trim();
+  menu.innerHTML = `<section class="cat">${items.map(it => {
+    const name  = esc(pick(it,"name"));
+    const desc  = esc(pick(it,"description"));
+    const price = esc(fmtPrice(it.price));
+    const sold  = !isAvail(it.available);
+    const photo = (it.photo||"").trim();
 
-      let thumbHtml;
-      if (photo) {
-        thumbHtml = `<div class="thumb-wrap" role="button" tabindex="0"
-          onclick="openLB('${esc(photo)}','${name}')"
-          onkeydown="if(event.key==='Enter')openLB('${esc(photo)}','${name}')">
-          <img src="${esc(photo)}" alt="${name}" loading="lazy"
-               onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${esc((pick(it,'name')||'•')[0])}</div><div class=\\'zoom-hint\\' style=\\'display:none\\'></div>'">
-          <div class="zoom-hint" aria-hidden="true">${zoomIcon}</div>
-        </div>`;
-      } else {
-        thumbHtml = `<div class="thumb-wrap" style="cursor:default">
-          <div class="ph">${esc((pick(it,"name")||"•")[0])}</div>
-        </div>`;
-      }
+    const thumb = photo
+      ? `<div class="thumb-wrap" role="button" tabindex="0"
+           onclick="openLB('${esc(photo)}','${name}')"
+           onkeydown="if(event.key==='Enter')openLB('${esc(photo)}','${name}')">
+           <img src="${esc(photo)}" alt="${name}" loading="lazy"
+                onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${esc((pick(it,'name')||'•')[0])}</div>'">
+           <div class="zoom-hint" aria-hidden="true">${zoomIcon}</div>
+         </div>`
+      : `<div class="thumb-wrap" style="cursor:default"><div class="ph">${esc((pick(it,"name")||"•")[0])}</div></div>`;
 
-      return `<div class="item${sold?' sold':''}">
-        ${thumbHtml}
-        <div class="item-body">
-          <div class="item-top">
-            <p class="item-name">${name}</p>
-            ${price ? `<span class="price">${price}</span>` : ""}
-          </div>
-          ${desc ? `<p class="desc">${desc}</p>` : ""}
-          ${sold ? `<span class="tag">${esc(T.sold[LANG])}</span>` : ""}
+    return `<div class="item${sold?' sold':''}">
+      ${thumb}
+      <div class="item-body">
+        <div class="item-top">
+          <p class="item-name">${name}</p>
+          ${price?`<span class="price">${price}</span>`:""}
         </div>
-      </div>`;
-    }).join("");
+        ${desc?`<p class="desc">${desc}</p>`:""}
+        ${sold?`<span class="tag">${esc(T.sold[LANG])}</span>`:""}
+      </div>
+    </div>`;
+  }).join("")}</section>`;
 
-    const id = `sub-${slug(cat)}`;
-    const showHead = hasSubs || cats.length > 1;
-    return `<section class="cat" id="${id}">
-      ${showHead ? `<div class="cat-head"><h2>${esc(cat)}</h2><span class="rule"></span></div>` : ""}
-      ${rows}
-    </section>`;
-  }).join("");
-
-  if (USING_SAMPLE) menu.insertAdjacentHTML("beforeend", `<p class="ribbon">${esc(T.sample[LANG])}</p>`);
+  if (USING_SAMPLE) menu.insertAdjacentHTML("beforeend",`<p class="ribbon">${esc(T.sample[LANG])}</p>`);
   document.getElementById("footer").innerHTML = `Mars · ${new Date().getFullYear()}`;
-  if (hasSubs) setupScrollSpy();
 }
 
 function switchGroup(idx) {
   ACTIVE_GROUP = idx;
   document.querySelectorAll("nav.groups button").forEach((b,i)=>b.classList.toggle("active",i===idx));
-  document.getElementById("menu").scrollIntoView({behavior:"instant",block:"nearest"});
-  renderGroupPanel();
+  window.scrollTo({top:0,behavior:"instant"});
+  renderPanel();
 }
 
-function setLang(l) { LANG = l; render(); }
+function setLang(l) { LANG=l; render(); }
 
-/* ---- scroll spy for subcats ---- */
-let spy;
-function setupScrollSpy() {
-  if (spy) spy.disconnect();
-  const links = [...document.querySelectorAll("nav.subcats a")];
-  if (!links.length) return;
-  spy = new IntersectionObserver(es => {
-    es.forEach(e => {
-      if (e.isIntersecting) {
-        const id = e.target.id;
-        links.forEach(l => l.classList.toggle("active", l.getAttribute("href")==="#"+id));
-      }
-    });
-  }, { rootMargin: "-120px 0px -65% 0px" });
-  document.querySelectorAll("section.cat").forEach(s => spy.observe(s));
-}
-
-/* ---- load ---- */
 async function load() {
-  if (!CONFIG.sheetCsvUrl) {
-    ITEMS = SAMPLE; USING_SAMPLE = true; render(); return;
-  }
+  if (!CONFIG.sheetCsvUrl) { ITEMS=SAMPLE; USING_SAMPLE=true; render(); return; }
   try {
     const res = await fetch(CONFIG.sheetCsvUrl);
     if (!res.ok) throw new Error("HTTP "+res.status);
@@ -535,8 +423,7 @@ async function load() {
     USING_SAMPLE = false;
     render();
   } catch(err) {
-    document.getElementById("menu").innerHTML = `<p class="state">${esc(T.error[LANG])}</p>`;
-    document.getElementById("subnav").classList.add("hidden");
+    document.getElementById("menu").innerHTML=`<p class="state">${esc(T.error[LANG])}</p>`;
     console.error(err);
   }
 }
