@@ -11,12 +11,6 @@ const CONFIG = {
   //    Файл → Поделиться → Опубликовать в интернете → выбрать лист → CSV → скопировать ссылку.
   sheetCsvUrl: "",
 
-  // 2) Ссылка на карту лояльности
-  loyaltyUrl: "https://card.marsespresso.com",
-
-  // 3) Ссылка на Google Карты для отзыва
-  reviewUrl: "https://g.page/r/CbFormK82YJZEAE/review",
-
   currency: "₺",
   currencyAfter: true,
   defaultLang: "tr"
@@ -95,40 +89,17 @@ header {
   text-transform: uppercase; line-height: 1; margin: 0;
   color: #fff;
 }
-.lang {
-  display: flex; align-items: center; gap: 12px; flex: 0 0 auto;
-}
-.lang-sep { color: var(--gold-border); font-size: 13px; }
-.lang button {
-  border: 0; background: transparent; color: var(--muted);
-  font-family: var(--font); font-size: 12px; font-weight: 500;
-  letter-spacing: 0.14em; text-transform: uppercase;
-  padding: 0 0 3px; cursor: pointer;
-  border-bottom: 1px solid transparent;
-  transition: color .15s, border-color .15s;
-}
-.lang button[aria-pressed="true"] { color: var(--gold); border-bottom-color: var(--gold); }
 
-/* ======== ACTION CHIPS ======== */
-.actions { display: flex; gap: 8px; padding: 12px 0 4px; flex-wrap: wrap; }
-.chip {
-  display: inline-flex; align-items: center; gap: 6px;
-  padding: 7px 13px; border-radius: 999px; text-decoration: none;
-  font-size: 13px; font-weight: 500;
-  border: 1px solid var(--gold-border);
-  background: var(--gold-dim); color: rgba(255,255,255,0.8);
-  white-space: nowrap; transition: background .15s;
-}
-.chip:hover { background: rgba(212,181,126,0.22); }
-.chip svg { width: 13px; height: 13px; flex: 0 0 auto; color: var(--gold); }
+
+
 
 /* ======== GROUP TABS ======== */
 nav.groups {
-  position: sticky; top: 57px; z-index: 30;
+  position: sticky; top: 53px; z-index: 30;
   margin: 0 -16px;
   background: color-mix(in srgb, var(--bg) 92%, transparent);
   backdrop-filter: blur(8px);
-  border-bottom: 1px solid var(--gold-border);
+  border-bottom: 1px solid rgba(212,181,126,0.18);
   display: flex; overflow-x: auto; scrollbar-width: none;
 }
 nav.groups::-webkit-scrollbar { display: none; }
@@ -141,7 +112,7 @@ nav.groups button {
   border-bottom: 1.5px solid transparent; margin-bottom: -1px;
   transition: color .15s, border-color .15s;
 }
-nav.groups button.active { color: var(--gold); border-bottom-color: var(--gold); }
+nav.groups button.active { color: var(--gold); border-bottom-color: var(--gold-light); }
 
 /* ======== ITEMS ======== */
 section.cat { padding-top: 24px; scroll-margin-top: 100px; }
@@ -248,15 +219,10 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding-top: 
          onerror="this.style.display='none';document.getElementById('brand-fallback').style.display='block'">
     <span class="brand-name" id="brand-fallback" style="display:none">Mars</span>
   </a>
-  <div class="lang" role="group" aria-label="Language">
-    <button id="btn-tr" onclick="setLang('tr')" aria-pressed="true">TR</button>
-    <span class="lang-sep">/</span>
-    <button id="btn-en" onclick="setLang('en')" aria-pressed="false">EN</button>
-  </div>
+
 </header>
 
 <div class="wrap">
-  <div class="actions" id="actions"></div>
   <nav class="groups" id="groupnav" aria-label="Menu groups"></nav>
   <main id="menu"><p class="state">Yükleniyor… / Loading…</p></main>
   <footer id="footer"></footer>
@@ -264,8 +230,6 @@ footer { text-align: center; color: var(--muted); font-size: 12px; padding-top: 
 
 <script>
 const T = {
-  loyalty: { tr:"Sadakat kartı", en:"Loyalty card" },
-  review:  { tr:"Değerlendirme bırak", en:"Leave a review" },
   empty:   { tr:"Menü yakında.", en:"Menu coming soon." },
   sold:    { tr:"Tükendi", en:"Sold out" },
   error:   { tr:"Menü yüklenemedi.", en:"Couldn't load menu." },
@@ -340,17 +304,6 @@ function getGroupItems() {
 }
 
 function render() {
-  document.documentElement.lang = LANG;
-  document.getElementById("btn-tr").setAttribute("aria-pressed", LANG==="tr");
-  document.getElementById("btn-en").setAttribute("aria-pressed", LANG==="en");
-
-  const icCard = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>`;
-  const icStar = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l2.7 5.5 6 .9-4.3 4.2 1 6-5.4-2.8L6.3 19.6l1-6L3 9.4l6-.9z"/></svg>`;
-  let a="";
-  if(CONFIG.loyaltyUrl) a+=`<a class="chip" href="${esc(CONFIG.loyaltyUrl)}" target="_blank" rel="noopener">${icCard}${esc(T.loyalty[LANG])}</a>`;
-  if(CONFIG.reviewUrl)  a+=`<a class="chip" href="${esc(CONFIG.reviewUrl)}" target="_blank" rel="noopener">${icStar}${esc(T.review[LANG])}</a>`;
-  document.getElementById("actions").innerHTML = a;
-
   document.getElementById("groupnav").innerHTML = GROUPS.map((g,i) => {
     const label = LANG==="tr" ? g.key_tr : g.key_en;
     return `<button onclick="switchGroup(${i})" class="${i===ACTIVE_GROUP?'active':''}">${esc(label)}</button>`;
@@ -412,7 +365,6 @@ function switchGroup(idx) {
   renderPanel();
 }
 
-function setLang(l) { LANG=l; render(); }
 
 async function load() {
   if (!CONFIG.sheetCsvUrl) { ITEMS=SAMPLE; USING_SAMPLE=true; render(); return; }
