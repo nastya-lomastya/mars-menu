@@ -115,6 +115,10 @@ nav.groups button {
   border-bottom: 1.5px solid transparent; margin-bottom: -1px;
   transition: color .15s, border-color .15s;
 }
+@media (min-width: 430px) {
+  nav.groups { padding: 0; }
+  nav.groups button { flex: 1; text-align: center; }
+}
 nav.groups button.active { color: var(--gold); border-bottom-color: var(--gold-light); }
 
 /* ======== ITEMS ======== */
