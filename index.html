@@ -115,7 +115,7 @@ nav.groups button {
   border-bottom: 1.5px solid transparent; margin-bottom: -1px;
   transition: color .15s, border-color .15s;
 }
-@media (min-width: 430px) {
+@media (min-width: 380px) {
   nav.groups { padding: 0; }
   nav.groups button { flex: 1; text-align: center; }
 }
@@ -274,6 +274,7 @@ function fmtPrice(p) {
 function slug(s) { return s.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,""); }
 function esc(s) { return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c])); }
 function isAvail(v) { const s=(v||"").trim().toLowerCase(); return s!=="false"&&s!=="0"&&s!=="no"&&s!=="hayır"; }
+function firstLetter(it){ return ((pick(it,'name')||'•').trim()[0]||'•').toUpperCase(); }
 
 function parseCSV(text) {
   const rows=[]; let row=[], f="", q=false;
@@ -344,10 +345,10 @@ function renderPanel() {
            onclick="openLB('${esc(photo)}','${name}')"
            onkeydown="if(event.key==='Enter')openLB('${esc(photo)}','${name}')">
            <img src="${esc(photo)}" alt="${name}" loading="lazy"
-                onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${esc((pick(it,'name')||'•')[0])}</div>'">
+                onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${esc(firstLetter(it))}</div>'">
            <div class="zoom-hint" aria-hidden="true">${zoomIcon}</div>
          </div>`
-      : `<div class="thumb-wrap" style="cursor:default"><div class="ph">${esc((pick(it,"name")||"•")[0])}</div></div>`;
+      : `<div class="thumb-wrap" style="cursor:default"><div class="ph">${esc(firstLetter(it))}</div></div>`;
 
     return `<div class="item${sold?' sold':''}">
       ${thumb}
