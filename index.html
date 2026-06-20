@@ -237,7 +237,8 @@ const T = {
   sample:  { tr:"Örnek veriler — Google E-Tablonuzu bağlayın.", en:"Sample data — connect your Google Sheet." }
 };
 
-let LANG = CONFIG.defaultLang === "en" ? "en" : "tr";
+const urlLang = new URLSearchParams(window.location.search).get('lang');
+let LANG = urlLang === 'en' ? 'en' : (urlLang === 'tr' ? 'tr' : (CONFIG.defaultLang === 'en' ? 'en' : 'tr'));
 let ITEMS = [];
 let ACTIVE_GROUP = 0;
 let USING_SAMPLE = false;
