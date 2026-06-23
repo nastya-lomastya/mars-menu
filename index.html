@@ -140,12 +140,12 @@ section.cat { padding-top: 24px; scroll-margin-top: 100px; }
   object-fit: cover; display: block;
 }
 .thumb-wrap .ph {
-  background: var(--surface);
+  background: linear-gradient(140deg, rgba(212,181,126,0.16), rgba(212,181,126,0.05));
   border: 1px solid var(--gold-border);
   display: flex; align-items: center; justify-content: center;
-  font-size: 26px; font-weight: 300; color: var(--gold);
-  letter-spacing: .05em;
+  color: var(--gold);
 }
+.thumb-wrap .ph svg { width: 34px; height: 34px; opacity: .9; }
 .zoom-hint {
   position: absolute; bottom: 4px; right: 4px;
   background: rgba(0,0,0,.55); border-radius: 5px;
@@ -276,6 +276,23 @@ function esc(s) { return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;","
 function isAvail(v) { const s=(v||"").trim().toLowerCase(); return s!=="false"&&s!=="0"&&s!=="no"&&s!=="hayır"; }
 function firstLetter(it){ return ((pick(it,'name')||'•').trim()[0]||'•').toUpperCase(); }
 
+// ---- category placeholder icons (golden line icons) ----
+const PH_ICONS = {
+  coffee: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h11v4a4 4 0 0 1-4 4H9a4 4 0 0 1-4-4V9Z"/><path d="M16 10h1.5a2.5 2.5 0 0 1 0 5H16"/><path d="M8 3c-.4.6-.4 1.4 0 2M11.5 3c-.4.6-.4 1.4 0 2"/></svg>`,
+  drinks: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h10l-1 14a2 2 0 0 1-2 2H9a2 2 0 0 1-2-2L6 4Z"/><path d="M6.5 9h9"/><path d="M14 2 11 9"/></svg>`,
+  food: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3.2"/></svg>`,
+  desserts: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 11h16l-1.4 8.2a1 1 0 0 1-1 .8H6.4a1 1 0 0 1-1-.8L4 11Z"/><path d="M12 11V7"/><path d="M12 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"/><path d="M4 11c2-2 4-2 4 0M16 11c0-2 2-2 4 0"/></svg>`
+};
+function phIcon(it){
+  const g = (it.group_en||"").trim().toLowerCase();
+  if (g.includes("coffee")) return PH_ICONS.coffee;
+  if (g.includes("drink"))  return PH_ICONS.drinks;
+  if (g.includes("food"))   return PH_ICONS.food;
+  if (g.includes("dessert"))return PH_ICONS.desserts;
+  // fallback by active group
+  return [PH_ICONS.coffee, PH_ICONS.drinks, PH_ICONS.food, PH_ICONS.desserts][ACTIVE_GROUP] || PH_ICONS.drinks;
+}
+
 function parseCSV(text) {
   const rows=[]; let row=[], f="", q=false;
   for (let i=0;i<text.length;i++) {
@@ -345,10 +362,10 @@ function renderPanel() {
            onclick="openLB('${esc(photo)}','${name}')"
            onkeydown="if(event.key==='Enter')openLB('${esc(photo)}','${name}')">
            <img src="${esc(photo)}" alt="${name}" loading="lazy"
-                onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${esc(firstLetter(it))}</div>'">
+                onerror="this.parentElement.innerHTML='<div class=\\'ph\\'>${phIcon(it)}</div>'">
            <div class="zoom-hint" aria-hidden="true">${zoomIcon}</div>
          </div>`
-      : `<div class="thumb-wrap" style="cursor:default"><div class="ph">${esc(firstLetter(it))}</div></div>`;
+      : `<div class="thumb-wrap" style="cursor:default"><div class="ph">${phIcon(it)}</div></div>`;
 
     return `<div class="item${sold?' sold':''}">
       ${thumb}
